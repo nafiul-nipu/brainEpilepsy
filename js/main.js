@@ -24,6 +24,8 @@ var mouse = {
     lastY: -1,
 }
 
+var currzoom = 0;
+
 var dragging = false
 
 function mousedown(event) {
@@ -63,6 +65,11 @@ function mousemove(event) {
     mouse.lastY = y;
 }
 
+function wheel(event) {
+    currZoom += evt.deltaY * -0.02;
+    currZoom = Math.min(Math.max(1, currZoom), 100);
+}
+
 window.onload = async function () {
     console.log("window on load");
 
@@ -75,7 +82,7 @@ window.onload = async function () {
     canvas.addEventListener('mousemove', mousemove);
     canvas.addEventListener('mousedown', mousedown);
     canvas.addEventListener('mouseup', mouseup);
-    // canvas.addEventListener('wheel', wheel);
+    canvas.addEventListener('wheel', wheel);
 
     const response = await fetch('models/brain.obj');
     const text = await response.text();
