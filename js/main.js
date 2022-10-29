@@ -1,3 +1,25 @@
+const electrodeData = [
+    [61.7397994995117, 139.014129638672, 178.866790771484],
+    [57.0425949096680, 139.287994384766, 172.553298950195],
+    [52.6332588195801, 139.174285888672, 168.291290283203],
+    [49.9343223571777, 139.158569335938, 163.294281005859],
+    [47.0855522155762, 139.024169921875, 158.372970581055],
+    [58.0416793823242, 131.243377685547, 179.853149414063],
+    [53.8179206848145, 130.746154785156, 173.396087646484],
+    [50.9673805236816, 130.553924560547, 168.459442138672],
+    [48.1004180908203, 130.171569824219, 163.658401489258],
+    [47.0327911376953, 130.298995971680, 158.395172119141],
+    [44.5878067016602, 152.413452148438, 127.619720458984],
+    [46.5737419128418, 153.781738281250, 122.439125061035],
+    [50.5636215209961, 155.926162719727, 118.359619140625],
+    [54.1101531982422, 157.709716796875, 113.420326232910],
+    [60.9065780639648, 159.683746337891, 110.268630981445],
+    [45.3121032714844, 142.812438964844, 126.440490722656],
+    [49.4790573120117, 145.072082519531, 121.394447326660],
+    [50.6709136962891, 147.108184814453, 117.142639160156],
+    [54.8323822021484, 149.705718994141, 112.750564575195],
+    [60.2906494140625, 149.689758300781, 109.682693481445]
+];
 let gl = null;
 let canvas = null;
 const WIDTH = 1000;
@@ -89,9 +111,12 @@ window.onload = async function () {
 
     const response = await fetch('models/brain.obj');
     const text = await response.text();
-    const obj = parseOBJ(text);
+    const obj = parseOBJ(text, electrodeData);
+    console.log(obj)
 
+    // console.log(JSON.stringify)
     parts = obj.geometries.map(({ data }) => {
+        console.log(data)
         // Because data is just named arrays like this
         //
         // {
@@ -112,7 +137,7 @@ window.onload = async function () {
             }
         } else {
             // there are no vertex colors so just use constant white
-            data.color = { value: [1, 1, 1, 1] };
+            data.color = { value: [0.840, 0.840, 0.840, 1] };
         }
 
         // create a buffer for each array by calling
@@ -120,7 +145,7 @@ window.onload = async function () {
         const bufferInfo = webglUtils.createBufferInfoFromArrays(gl, data);
         return {
             material: {
-                u_diffuse: [1, 1, 1, 1],
+                // u_diffuse: [1, 1, 1, 1],
             },
             bufferInfo,
         };
@@ -162,7 +187,9 @@ function render(time) {
 
     webglUtils.resizeCanvasToDisplaySize(gl.canvas);
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+    gl.clearColor(0.370, 0.370, 0.370, 1.0);
     gl.enable(gl.DEPTH_TEST);
+    gl.clear(gl.COLOR_BUFFER_BIT);
 
     const fieldOfViewRadians = degToRad(60);
     const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
@@ -212,13 +239,14 @@ function render(time) {
         // calls gl.uniform
         webglUtils.setUniforms(meshProgramInfo, {
             u_world,
-            u_diffuse: material.u_diffuse,
+            // u_diffuse: material.u_diffuse,
         });
         // calls gl.drawArrays or gl.drawElements
+        console.log(bufferInfo)
         webglUtils.drawBufferInfo(gl, bufferInfo);
     }
 
-    requestAnimationFrame(render);
+    // requestAnimationFrame(render);
 }
 
 function getExtents(positions) {

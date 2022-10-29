@@ -1,4 +1,4 @@
-function parseOBJ(text) {
+function parseOBJ(text, electrodeData) {
     // because indices are base 1 let's just fill in the 0th data
     const objPositions = [[0, 0, 0]];
     const objTexcoords = [[0, 0]];
@@ -67,12 +67,15 @@ function parseOBJ(text) {
 
     function addVertex(vert) {
         const ptn = vert.split('/');
+        // console.log(ptn)
         ptn.forEach((objIndexStr, i) => {
             if (!objIndexStr) {
                 return;
             }
             const objIndex = parseInt(objIndexStr);
             const index = objIndex + (objIndex >= 0 ? 0 : objVertexData[i].length);
+            // console.log(index)
+            // console.log(objVertexData)
             webglVertexData[i].push(...objVertexData[i][index]);
             // if this is the position index (index 0) and we parsed
             // vertex colors then copy the vertex colors to the webgl vertex color data
@@ -87,9 +90,28 @@ function parseOBJ(text) {
             // if there are more than 3 values here they are vertex colors
             if (parts.length > 3) {
                 objPositions.push(parts.slice(0, 3).map(parseFloat));
-                objColors.push(parts.slice(3).map(parseFloat));
+                // objColors.push(parts.slice(3).map(parseFloat));
             } else {
-                objPositions.push(parts.map(parseFloat));
+                let arr = parts.map(parseFloat)
+                objPositions.push(arr);
+                // console.log(Math.round(parts.map(parseInt)))
+                let round = arr.map(a => Math.round(a));
+                electrodeData.forEach(ed => {
+                    let edRound = ed.map(e => Math.round(e))
+                    if (JSON.stringify(edRound) == JSON.stringify(round)) {
+                        // console.log('true')
+                        // objPositions.push(arr);
+                        for (i = objColors.length; i >= objColors.length - 200; i--) {
+                            objColors[i] = 0.045
+                        }
+                        objColors.push([0.045, 0.045, 0.045])
+
+                    }
+                    else {
+                        objColors.push([0.5, 0.6, 0.9])
+                    }
+                });
+                // console.log(parts.map(parseFloat))
             }
         },
         vn(parts) {
@@ -150,7 +172,9 @@ function parseOBJ(text) {
     }
 
     // remove any arrays that have no entries.
+    // console.log(geometries)
     for (const geometry of geometries) {
+        // console.log(geometry)
         geometry.data = Object.fromEntries(
             Object.entries(geometry.data).filter(([, array]) => array.length > 0));
     }
