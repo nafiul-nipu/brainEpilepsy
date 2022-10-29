@@ -1,18 +1,20 @@
 let gl = null;
 let canvas = null;
-const WIDTH = 570;
-const HEIGHT = 570;
+const WIDTH = 1000;
+const HEIGHT = 1000;
 canvas = document.getElementById('glcanvas')
 
 let camera = null;
 const center = vec3.set(vec3.create(), 0.5, 0.5, 0.5);
-let zFar;
-let zNear;
-let cameraPosition;
-let cameraTarget;
-let meshProgramInfo;
-let objOffset;
-let parts;
+let zFar = null;
+let zNear = null;
+let cameraPosition = null;
+let cameraTarget = null;
+let meshProgramInfo = null;
+let objOffset = null;
+let parts = null;
+
+let range = null;
 
 var angle = {
     x: 0,
@@ -24,7 +26,7 @@ var mouse = {
     lastY: -1,
 }
 
-var currzoom = 0;
+var currzoom = 1;
 
 var dragging = false
 
@@ -66,13 +68,14 @@ function mousemove(event) {
 }
 
 function wheel(event) {
-    currZoom += evt.deltaY * -0.02;
-    currZoom = Math.min(Math.max(1, currZoom), 100);
+    currzoom += event.deltaY * 0.02;
+    currzoom = Math.min(Math.max(1, currzoom), 500);
 }
 
 window.onload = async function () {
     console.log("window on load");
-
+    canvas.width = 700;
+    canvas.height = 700;
     gl = canvas.getContext("webgl2");
     if (!gl) {
         alert("Unable to initialize WebGL2. Your browser may not support it");
@@ -129,7 +132,7 @@ window.onload = async function () {
     meshProgramInfo = webglUtils.createProgramInfo(gl, [vertexshader, fragmetnshader]);
 
     const extents = getGeometriesExtents(obj.geometries);
-    const range = m4.subtractVectors(extents.max, extents.min);
+    range = m4.subtractVectors(extents.max, extents.min);
     // amount to move the object so its center is at the origin
     objOffset = m4.scaleVector(
         m4.addVectors(
@@ -139,16 +142,16 @@ window.onload = async function () {
     cameraTarget = [0, 0, 0];
     // figure out how far away to move the camera so we can likely
     // see the object.
-    const radius = m4.length(range) * 1.2;
-    cameraPosition = m4.addVectors(cameraTarget, [
-        0,
-        0,
-        radius,
-    ]);
-    // Set zNear and zFar to something hopefully appropriate
-    // for the size of this object.
-    zNear = radius / 100;
-    zFar = radius * 3;
+    // const radius = m4.length(range) * 1.5;
+    // cameraPosition = m4.addVectors(cameraTarget, [
+    //     0,
+    //     0,
+    //     radius,
+    // ]);
+    // // Set zNear and zFar to something hopefully appropriate
+    // // for the size of this object.
+    // zNear = radius / 100;
+    // zFar = radius * 3;
 
     requestAnimationFrame(render);
 
@@ -166,6 +169,17 @@ function render(time) {
     const projection = m4.perspective(fieldOfViewRadians, aspect, zNear, zFar);
 
     const up = [0, 1, 0];
+
+    let radius = m4.length(range) * currzoom * 0.75
+    cameraPosition = m4.addVectors(cameraTarget, [
+        0,
+        0,
+        radius,
+    ]);
+    // Set zNear and zFar to something hopefully appropriate
+    // for the size of this object.
+    zNear = radius / 100;
+    zFar = radius * 3;
     // Compute the camera's matrix using look at.
     const camera = m4.lookAt(cameraPosition, cameraTarget, up);
 
