@@ -4,7 +4,32 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+
+    <title>Brain Epilepsy</title>
   </head>
-  <body></body>
+  <body>
+    <div class="container mt-4">
+      <h4>WebGL Volume Raycaster</h4>
+      <div class="row">
+        <div class="col-12 text-center">
+          <canvas id="glcanvas" height="570" width="570"></canvas>
+        </div>
+      </div>
+    </div>
+  </body>
+
+  <script src="https://webglfundamentals.org/webgl/resources/m4.js"></script>
+  <script src="js/gl-matrix-min.js"></script>
+  <script src="js/webgl-util.js"></script>
+  <script src="js/webgl-utils-fundamental.js"></script>
+  <script src="js/shader-srcs.js"></script>
+  <script src="js/OBJLoader.js"></script>
+  <script src="js/main.js"></script>
 </html>
