@@ -90,27 +90,10 @@ function parseOBJ(text, electrodeData) {
             // if there are more than 3 values here they are vertex colors
             if (parts.length > 3) {
                 objPositions.push(parts.slice(0, 3).map(parseFloat));
-                // objColors.push(parts.slice(3).map(parseFloat));
+                objColors.push(parts.slice(3).map(parseFloat));
             } else {
                 let arr = parts.map(parseFloat)
                 objPositions.push(arr);
-                // console.log(Math.round(parts.map(parseInt)))
-                let round = arr.map(a => Math.round(a));
-                electrodeData.forEach(ed => {
-                    let edRound = ed.map(e => Math.round(e))
-                    if (JSON.stringify(edRound) == JSON.stringify(round)) {
-                        // console.log('true')
-                        // objPositions.push(arr);
-                        for (i = objColors.length; i >= objColors.length - 200; i--) {
-                            objColors[i] = 0.045
-                        }
-                        objColors.push([0.045, 0.045, 0.045])
-
-                    }
-                    else {
-                        objColors.push([0.5, 0.6, 0.9])
-                    }
-                });
                 // console.log(parts.map(parseFloat))
             }
         },
@@ -124,6 +107,7 @@ function parseOBJ(text, electrodeData) {
         f(parts) {
             setGeometry();
             const numTriangles = parts.length - 2;
+            // console.log(numTriangles)
             for (let tri = 0; tri < numTriangles; ++tri) {
                 addVertex(parts[0]);
                 addVertex(parts[tri + 1]);

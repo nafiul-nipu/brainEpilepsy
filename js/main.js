@@ -53,7 +53,7 @@ var currzoom = 1;
 var dragging = false
 
 function mousedown(event) {
-    console.log('here')
+    // console.log('here')
     var x = event.clientX;
     var y = event.clientY;
     var rect = event.target.getBoundingClientRect();
@@ -70,7 +70,7 @@ function mouseup(event) {
 }
 
 function mousemove(event) {
-    console.log('mouse moving')
+    // console.log('mouse moving')
     var x = event.clientX;
     var y = event.clientY;
     if (dragging) {
@@ -112,11 +112,11 @@ window.onload = async function () {
     const response = await fetch('models/brain.obj');
     const text = await response.text();
     const obj = parseOBJ(text, electrodeData);
-    console.log(obj)
+    // console.log(obj)
 
     // console.log(JSON.stringify)
     parts = obj.geometries.map(({ data }) => {
-        console.log(data)
+        // console.log(data)
         // Because data is just named arrays like this
         //
         // {
@@ -129,29 +129,50 @@ window.onload = async function () {
         // shader we can pass it directly into `createBufferInfoFromArrays`
         // from the article "less code more fun".
         // console.log(data)
-        if (data.color) {
-            if (data.position.length === data.color.length) {
-                // it's 3. The our helper library assumes 4 so we need
-                // to tell it there are only 3.
-                data.color = { numComponents: 3, data: data.color };
-            }
-        } else {
-            // there are no vertex colors so just use constant white
-            data.color = { value: [0.840, 0.840, 0.840, 1] };
-        }
+        // if (data.color) {
+        //     if (data.position.length === data.color.length) {
+        //         // it's 3. The our helper library assumes 4 so we need
+        //         // to tell it there are only 3.
+        //         data.color = { numComponents: 3, data: data.color };
+        //     }
+        // } else {
+        //     // there are no vertex colors so just use constant white
+        //     data.color = { value: [0.840, 0.840, 0.840, 1] };
+        // }
 
+        data.color = { numComponents: 3, data: [] };
+        for (let i = 0; i < data.position.length; i = i + 3) {
+            let match = false
+            for (let j = 0; j < electrodeData.length; j++) {
+                if (
+                    data.position[i].toFixed(3) == electrodeData[j][0].toFixed(3) &&
+                    data.position[i + 1].toFixed(3) == electrodeData[j][1].toFixed(3) &&
+                    data.position[i + 2].toFixed(3) == electrodeData[j][2].toFixed(3)
+                ) {
+                    // console.log([data.position[i], data.position[i + 1], data.position[i + 2]], electrodeData[j])
+                    // console.log("true")
+                    data.color.data.push(1.0, 0.0, 0.0)
+                    match = true;
+                    break;
+                }
+            }
+            if (match == false) {
+                data.color.data.push(0.840, 0.840, 0.840)
+            }
+
+        }
         // create a buffer for each array by calling
         // gl.createBuffer, gl.bindBuffer, gl.bufferData
         const bufferInfo = webglUtils.createBufferInfoFromArrays(gl, data);
         return {
             material: {
-                // u_diffuse: [1, 1, 1, 1],
+                u_diffuse: [1, 1, 1, 1],
             },
             bufferInfo,
         };
     });
 
-    console.log(parts)
+    // console.log(parts)
 
     // compiles and links the shaders, looks up attribute and uniform locations
     meshProgramInfo = webglUtils.createProgramInfo(gl, [vertexshader, fragmetnshader]);
@@ -239,14 +260,13 @@ function render(time) {
         // calls gl.uniform
         webglUtils.setUniforms(meshProgramInfo, {
             u_world,
-            // u_diffuse: material.u_diffuse,
+            u_diffuse: material.u_diffuse,
         });
         // calls gl.drawArrays or gl.drawElements
-        console.log(bufferInfo)
         webglUtils.drawBufferInfo(gl, bufferInfo);
     }
 
-    // requestAnimationFrame(render);
+    requestAnimationFrame(render);
 }
 
 function getExtents(positions) {
