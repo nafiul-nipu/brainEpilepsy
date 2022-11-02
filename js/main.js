@@ -140,27 +140,28 @@ window.onload = async function () {
         //     data.color = { value: [0.840, 0.840, 0.840, 1] };
         // }
 
-        data.color = { numComponents: 3, data: [] };
-        for (let i = 0; i < data.position.length; i = i + 3) {
-            let match = false
-            for (let j = 0; j < electrodeData.length; j++) {
-                if (
-                    data.position[i].toFixed(3) == electrodeData[j][0].toFixed(3) &&
-                    data.position[i + 1].toFixed(3) == electrodeData[j][1].toFixed(3) &&
-                    data.position[i + 2].toFixed(3) == electrodeData[j][2].toFixed(3)
-                ) {
-                    // console.log([data.position[i], data.position[i + 1], data.position[i + 2]], electrodeData[j])
-                    // console.log("true")
-                    data.color.data.push(1.0, 0.0, 0.0)
-                    match = true;
-                    break;
-                }
-            }
-            if (match == false) {
-                data.color.data.push(0.840, 0.840, 0.840)
-            }
+        let color = data.color
+        data.color = { numComponents: 3, data: color };
+        // for (let i = 0; i < data.position.length; i = i + 3) {
+        //     let match = false
+        //     for (let j = 0; j < electrodeData.length; j++) {
+        //         if (
+        //             data.position[i].toFixed(3) == electrodeData[j][0].toFixed(3) &&
+        //             data.position[i + 1].toFixed(3) == electrodeData[j][1].toFixed(3) &&
+        //             data.position[i + 2].toFixed(3) == electrodeData[j][2].toFixed(3)
+        //         ) {
+        //             // console.log([data.position[i], data.position[i + 1], data.position[i + 2]], electrodeData[j])
+        //             // console.log("true")
+        //             data.color.data.push(1.0, 0.0, 0.0)
+        //             match = true;
+        //             break;
+        //         }
+        //     }
+        //     if (match == false) {
+        //         data.color.data.push(0.840, 0.840, 0.840)
+        //     }
 
-        }
+        // }
         // create a buffer for each array by calling
         // gl.createBuffer, gl.bindBuffer, gl.bufferData
         const bufferInfo = webglUtils.createBufferInfoFromArrays(gl, data);

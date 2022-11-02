@@ -94,6 +94,29 @@ function parseOBJ(text, electrodeData) {
             } else {
                 let arr = parts.map(parseFloat)
                 objPositions.push(arr);
+                let match = false;
+
+                // console.log(arr)
+                for (let j = 0; j < electrodeData.length; j++) {
+                    if (
+                        arr[0].toFixed(3) == electrodeData[j][0].toFixed(3) &&
+                        arr[1].toFixed(3) == electrodeData[j][1].toFixed(3) &&
+                        arr[2].toFixed(3) == electrodeData[j][2].toFixed(3)
+                    ) {
+                        // console.log([data.position[i], data.position[i + 1], data.position[i + 2]], electrodeData[j])
+                        // console.log("true")
+                        // data.color.data.push(1.0, 0.0, 0.0)
+                        objColors.push([1.0, 0.0, 0.0]);
+                        match = true;
+                        // console.log("match is true")
+                        break;
+                    }
+                }
+                if (match == false) {
+                    objColors.push([0.840, 0.840, 0.840]);
+                    // console.log("match is false now")
+                }
+
                 // console.log(parts.map(parseFloat))
             }
         },
