@@ -3,46 +3,34 @@ function main() {
     const renderer = new THREE.WebGLRenderer({ canvas });
     renderer.setSize(700, 700);
 
-    const fov = 45;
+    const fov = 75;
     const aspect = 2;  // the canvas default
     const near = 0.1;
-    const far = 100;
+    const far = 25;
     const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-    camera.position.set(0, 10, 20);
+    camera.position.z = 4;
+    // camera.position.set(0, 10, 20);
 
     const controls = new THREE.OrbitControls(camera, canvas);
-    controls.target.set(0, 5, 0);
+    controls.target.set(0, 0, 0);
     controls.update();
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color('black');
-
-    // {
-    //     const planeSize = 4000;
-
-    //     const loader = new THREE.TextureLoader();
-    //     const texture = loader.load('https://r105.threejsfundamentals.org/threejs/resources/images/checker.png');
-    //     texture.wrapS = THREE.RepeatWrapping;
-    //     texture.wrapT = THREE.RepeatWrapping;
-    //     texture.magFilter = THREE.NearestFilter;
-    //     const repeats = planeSize / 200;
-    //     texture.repeat.set(repeats, repeats);
-
-    //     const planeGeo = new THREE.PlaneBufferGeometry(planeSize, planeSize);
-    //     const planeMat = new THREE.MeshPhongMaterial({
-    //         map: texture,
-    //         side: THREE.DoubleSide,
-    //     });
-    //     const mesh = new THREE.Mesh(planeGeo, planeMat);
-    //     mesh.rotation.x = Math.PI * -.5;
-    //     scene.add(mesh);
-    // }
+    scene.background = new THREE.Color('white');
 
     {
-        const skyColor = 0xB1E1FF;  // light blue
-        const groundColor = 0xB97A20;  // brownish orange
+        const color = 0xFFFFFF;
         const intensity = 1;
-        const light = new THREE.HemisphereLight(skyColor, groundColor, intensity);
+        const light = new THREE.DirectionalLight(color, intensity);
+        light.position.set([-1, 2, 4]);
+        scene.add(light);
+    }
+
+    {
+        const color = 0xFFFFFF;
+        const intensity = 1;
+        const light = new THREE.DirectionalLight(color, intensity);
+        light.position.set([1, 1, -2]);
         scene.add(light);
     }
 
@@ -84,7 +72,7 @@ function main() {
     {
         const material = new THREE.MeshPhongMaterial({
             // color: 0XFFFFFF,
-            opacity: 0.5,
+            opacity: 0.2,
             transparent: true,
         });
 
