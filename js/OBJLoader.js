@@ -96,7 +96,7 @@ function parseOBJ(text, electrodeData = null) {
                 objPositions.push(arr);
 
                 if (electrodeData === null) {
-                    // objColors.push([0.840, 0.840, 0.840]);
+                    objColors.push([0.840, 0.840, 0.840]);
                 } else {
                     let match = false;
 

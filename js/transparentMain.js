@@ -74,7 +74,7 @@ window.onload = async function () {
 
     objects = [];
     drawObjects = [];
-    // var numObjects = 100;
+    var numObjects = 100;
     var baseHue = rand(0, 360);
     // for (var ii = 0; ii < numObjects; ++ii) {
     var uniforms = {
@@ -89,7 +89,7 @@ window.onload = async function () {
     };
     drawObjects.push({
         programInfo: programInfo,
-        bufferInfo: parts[0],
+        bufferInfo: shapes[0],
         uniforms: uniforms,
     });
     objects.push({
