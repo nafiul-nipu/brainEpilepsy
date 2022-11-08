@@ -71,7 +71,7 @@ function main() {
 
     {
         const material = new THREE.MeshPhongMaterial({
-            // color: 0XFFFFFF,
+            color: 0X808080,
             opacity: 0.2,
             transparent: true,
         });
