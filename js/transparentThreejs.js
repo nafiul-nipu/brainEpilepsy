@@ -81,6 +81,7 @@ function main() {
 
         // objLoader.setMaterials(material);
         objLoader.load('models/brain.obj', (event) => {
+            console.log(event)
             const root = event.detail.loaderRootNode;
 
             root.traverse(function (child) {
